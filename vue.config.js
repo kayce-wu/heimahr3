@@ -37,11 +37,13 @@ module.exports = {
       errors: true
     },
     proxy: {
+      // kw: path：目标服务器，'/api'表示只要请求里面有带'/api'的都会把请求转向我们的目标服务器，如：'/api/sys/login'先拼成'http://localhost:9528/api/sys/login'最后变为代理目标服务器'https://heimahr.itheima.net/api/sys/login',改完这里需要重启服务。
       '/api': {
+        // 目标服务器
         target: 'https://heimahr.itheima.net'
       }
     }
-    // before: require('./mock/mock-server.js')
+    // before: require('./mock/mock-server.js') 基础模板做的模拟数据，会拦截请求，所以要注释掉
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

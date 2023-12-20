@@ -5,20 +5,30 @@
       <h1>登录</h1>
       <el-card shadow="never" class="login-card">
         <!--登录表单-->
-        <!-- el-form > el-form-item > el-input -->
+        <!-- el-form > el-form-item > el-input kw:这个是表单校验的必须标签 -->
+        <!-- kw: 为了完成表单校验给el-form绑定了3个属性，ref="form" :model="loginForm" :rules="loginRules"-->
+        <!-- kw: ref="form"--在点击登录按钮时，就可以通过ref来获取整个表单的实例，然后进行表单的校验-->
+        <!-- kw: rules="loginRules"--所有的规则都写在了rules所绑定的变量loginRules里-->
+        <!-- kw: :model="loginForm"是一个数据结构，表示这个表单所绑定的数据都在loginForm找-->
         <el-form ref="form" :model="loginForm" :rules="loginRules">
           <el-form-item prop="mobile">
             <el-input v-model="loginForm.mobile" placeholder="请输入手机号" />
           </el-form-item>
+          <!-- kw: prop="password"，prop属性去找password相关的rules属性-->
           <el-form-item prop="password">
+            <!-- kw: v-model="loginForm.password"双向绑定，最重要的一个属性，双向绑定说白了就是互通，使得密码值永远只有最新的一个，主要用于回显-->
+            <!-- kw: 例如el-input输入了一个新值，那loginForm.password也会拿到这个新值，反之，当loginForm.password被重新赋值，这边的密码也会立即显示最新的密码-->
+            <!-- kw: show-password密文-->
             <el-input v-model="loginForm.password" show-password placeholder="请输入密码" />
           </el-form-item>
           <el-form-item prop="isAgree">
+            <!-- kw: 勾选框 -->
             <el-checkbox v-model="loginForm.isAgree">
               用户平台使用协议
             </el-checkbox>
           </el-form-item>
           <el-form-item>
+            <!-- kw: el-button按钮，type="primary"是已经写好的初始样式，@click="login"是点击事件的处理函数，在代码76行methods:中实现-->
             <el-button style="width:350px" type="primary" @click="login">登录</el-button>
           </el-form-item>
         </el-form>
@@ -31,11 +41,18 @@ export default {
   name: 'Login',
   data() {
     return {
+      /* kw：mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+       *解析：判断当前环境是否为'development'开发环境，是就给默认值，不是就空
+      **/
       loginForm: {
         mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
         password: process.env.NODE_ENV === 'development' ? '123456' : '',
         isAgree: process.env.NODE_ENV === 'development'
       },
+      /* kw：trigger: 'blur'，失去焦点时提示message
+       *解析：两个值'change/blur'时表示里面输入的值改变或者失去焦点时提示message
+       *required：必填检查，只能检测 null undefined ""，不能检查布尔值
+       **/
       loginRules: {
         mobile: [{
           required: true,
@@ -60,11 +77,12 @@ export default {
         }],
         // required只能检测 null undefined ""
         isAgree: [{
+          // kw: 自定义的校验方式，属性validator是一个函数
           validator: (rule, value, callback) => {
             // rule校验规则
             // value 校验的值
-            // callback 函数 - promise resolve reject
-            // callback() callback(new Error(错误信息))
+            // callback 函数 - promise resolve reject，一定会去执行成功或者失败
+            // callback()成功 callback(new Error(错误信息))失败
             value ? callback() : callback(new Error('您必须勾选用户的使用协议'))
           }
         }]
@@ -72,9 +90,13 @@ export default {
     }
   },
   methods: {
+    // kw：表单的整体校验
+    // kw：validate是一个校验函数，在里面加了回调函数()=>{}判断表单是否正确，OK就跳转到主页
+    // kw：async，await异步
     login() {
       this.$refs.form.validate(async(isOK) => {
         if (isOK) {
+          // kw：this.$store.dispatch('user/login', this.loginForm)：store目录下的user.js是实现方法
           await this.$store.dispatch('user/login', this.loginForm)
           // Vuex 中的action 返回的promise
           // 跳转主页
