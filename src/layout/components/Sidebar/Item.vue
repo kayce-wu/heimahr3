@@ -12,8 +12,10 @@ export default {
       default: ''
     }
   },
+  // 渲染函数
   render(h, context) {
     // 图标 和标题
+    // context上下文，context.props就是layout/components/Sidebar/SidebarItem.vue中item组件传进来的 icon, title，if (icon)判断icon是否存在后，渲染图标，标题
     const { icon, title } = context.props
     const vnodes = []
     // 渲染图标
@@ -28,7 +30,7 @@ export default {
     if (title) {
       vnodes.push(<span slot='title'>{(title)}</span>)
     }
-    return vnodes
+    return vnodes // 渲染节点
   }
 }
 </script>

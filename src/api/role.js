@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /** *
- * 获取角色列表
+ * 获取角色列表，根据接口文档，params是查询参数，和其他接口的请求体参数不一样，说白了就是params是加在URL后面的参数如/sys/role？参数，请求体参数就boy参数
  * **/
 export function getRoleList(params) {
   return request({

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-//kw:'./components'当前目录下的组件
+// kw:'./components'当前目录下的组件
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 

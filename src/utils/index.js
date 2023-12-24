@@ -132,6 +132,7 @@ export function transListToTreeData(list, rootValue) {
       arr.push(item)
       // 当前节点的id 和 当前节点的子节点的pid是想等的
       const children = transListToTreeData(list, item.id) // 找到的节点的子节点
+      // kw: if (children.length)如果子节点的内容为空，就是没有下一级了就不赋值了。
       if (children.length) { item.children = children } // 将子节点赋值给当前节点
     }
   })

@@ -1,4 +1,5 @@
 <template>
+  <!-- 属性showTitle绑定给title，添加？编辑？ -->
   <el-dialog :title="showTitle" :visible="showDialog" @close="close">
     <!-- 放置弹层内容 -->
     <el-form ref="addDept" :model="formData" :rules="rules" label-width="120px">
@@ -9,6 +10,7 @@
         <el-input v-model="formData.code" placeholder="2-10个字符" style="width: 80%" size="mini" />
       </el-form-item>
       <el-form-item prop="managerId" label="部门负责人">
+        <!-- el-select下拉列表 -->
         <el-select v-model="formData.managerId" placeholder="请选择负责人" style="width: 80%" size="mini">
           <!-- 下拉选项 循环 负责人数据 label表示显示的字段 value 存储字段 -->
           <el-option v-for="item in managerList" :key="item.id" :label="item.username" :value="item.id" />
@@ -18,7 +20,7 @@
         <el-input v-model="formData.introduce" placeholder="1-100个字符" type="textarea" size="mini" :rows="4" style="width: 80%" />
       </el-form-item>
       <el-form-item>
-        <!-- 按钮 -->
+        <!-- 按钮 利用el-row,el-col行和列可以轻松地给确定和取消布局，type="flex" justify="center"水平居中 -->
         <el-row type="flex" justify="center">
           <el-col :span="12">
             <el-button size="mini" type="primary" @click="btnOK">确定</el-button>
@@ -62,9 +64,9 @@ export default {
             validator: async(rule, value, callback) => {
               // value就是输入的编码
               let result = await getDepartment()
-              // 判断是否是编辑模式
+              // 判断是否是编辑模式，因为添加子部门不会获取部门的ID
               if (this.formData.id) {
-                // 编辑场景
+                // 编辑场景，排除自身
                 result = result.filter(item => item.id !== this.formData.id)
               }
               // result数组中是否存在 value值
@@ -105,6 +107,7 @@ export default {
       }
     }
   },
+  // 使用计算属性生成当前显示的弹层标题，就是根据formData.id判断添加还是编辑，最后这个属性showTitle绑定给title就行了
   computed: {
     showTitle() {
       return this.formData.id ? '编辑部门' : '新增部门'
@@ -116,7 +119,7 @@ export default {
   methods: {
     close() {
       // 修改父组件的值 子传父
-      // resetFields 只能重置在模板中绑定的数据
+      // resetFields 只能重置在模板中绑定的数据，所以下面先手动赋值清空，然后再执行这句话
       this.formData = {
         code: '', // 部门编码
         introduce: '', // 部门介绍
@@ -142,6 +145,7 @@ export default {
             await updateDepartment(this.formData)
           } else {
             // 新增场景
+            // kw: ...this.formData表示对这个数据对象全部复制，pid: this.currentNodeId表示对this.formData中的pid进行重新赋值
             await addDepartment({ ...this.formData, pid: this.currentNodeId })
           }
           // 通知父组件更新
@@ -154,6 +158,7 @@ export default {
     },
     // 获取组织的详情
     async getDepartmentDetail() {
+      // kw：这里做了获取数据和表单赋值操作
       this.formData = await getDepartmentDetail(this.currentNodeId)
     }
   }

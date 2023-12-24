@@ -31,9 +31,9 @@ const mutations = {
 
 // kw:actions用来做异步操作
 const actions = {
-  // context上下文，传入参数
+  // context上下文，传入参数，这个参数传进来就是为了后面的提交函数context.commit，context.commit('setToken', token)后会执行setToken(token)
   async login(context, data) {
-    console.log(data)
+    // console.log(data)
     // todo: 调用登录接口，要调用登录接口还需要一些配置如请求模块，vuex封装，代理跨域区分环境等
     const token = await login(data)
     // 返回一个token 123456

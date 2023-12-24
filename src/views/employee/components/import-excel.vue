@@ -7,6 +7,7 @@
   >
     <el-row type="flex" justify="center">
       <div class="upload-excel">
+        <!-- 组件input 的这两个 type="file" accept=".xlsx, .xls"，只可以上传.xlsx, .xls类型 -->
         <input
           ref="excel-upload-input"
           class="excel-upload-input"
@@ -44,9 +45,9 @@ export default {
       const data = await getExportTemplate()
       FileSaver.saveAs(data, '员工导入模版.xlsx')
     },
-    // 弹出文件选择器-只有一种方式 通过input file
+    // 弹出文件选择器-只有一种方式 通过input file，上面组件input 的这两个 type="file" accept=".xlsx, .xls"，只可以上传.xlsx, .xls类型
     handleUpload() {
-      this.$refs['excel-upload-input'].click() // this.$refs.属性名 和 this.$refs[属性名] 等价
+      this.$refs['excel-upload-input'].click() // this.$refs.属性名 和 this.$refs[属性名] 等价，本来是想用input的ref实例this.$refs.excel-upload-input的，但是语法出错了
     },
     async uploadChange(event) {
       console.log(event.target.files)

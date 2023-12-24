@@ -150,6 +150,7 @@ export default {
     // 如何获取路由参数的中id
     // if (this.$route.params.id) { this.getEmployeeDetail() }
     this.$route.params.id && this.getEmployeeDetail()
+    // this.$route.params.id &&，判断了有id的情况下才去获取员工详情，避免了添加员工的功能也去获取详情。
   },
   methods: {
     async getEmployeeDetail() {
@@ -161,6 +162,8 @@ export default {
           // 编辑模式
           if (this.$route.params.id) {
             // 编辑模式
+            // 查看代码中userInfo对象没有id，而看上面接口是需要id，这不是有问题？
+            // 答：上一节点开编辑模式下，获取过员工详情，并且用userInfo接受接口返回数据，这个数据里就有id了。this.userInfo = await getEmployeeDetail(this.$route.params.id)
             await updateEmployee(this.userInfo)
             this.$message.success('更新员工成功')
           } else {

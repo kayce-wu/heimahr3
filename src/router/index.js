@@ -4,8 +4,9 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 /* Layout */
-//kw:'@/layout'解析：当前目录的SRC下的layout，表示会拉取layout下的index.vue，这个文件实现了二级路由
+// kw:'@/layout'解析：当前目录的SRC下的layout，表示会拉取layout下的index.vue，这个文件实现了二级路由
 import Layout from '@/layout'
+// kw: 引入组织架构路由router/modules/department
 import departmentRouter from './modules/department'
 import approvalRouter from './modules/approval'
 import attendanceRouter from './modules/attendance'
@@ -40,11 +41,12 @@ import socialRouter from './modules/social'
  * all roles can be accessed
  */
 
-//kw:以下除了layout之外，剩下的都是一级组件，因为一级路由layout下有children(子节点)，是二级路由；
+// kw:以下除了layout之外，剩下的都是一级组件，因为一级路由layout下有children(子节点)，是二级路由；
 export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
+    // kw: 这个hidden与sidebar-item组件是否显示有关，layout/components/Sidebar/SidebarItem.vue中<div v-if="!item.hidden">
     hidden: true
   },
 
@@ -54,7 +56,7 @@ export const constantRoutes = [
     hidden: true
   },
 
-  //kw:表示会拉取layout下的index.vue，这个文件实现了二级路
+  // kw:表示会拉取layout下的index.vue，这个文件实现了二级路
   {
     path: '/',
     component: Layout,

@@ -1,9 +1,11 @@
 <template>
-  <!-- 判断是否隐藏菜单 -->
+  <!-- 判断是否隐藏菜单，在router/index.js有hidden值的设置 -->
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+          <!-- 读取了meta中的icon和title属性 -->
+          <!--item 来自于import Item from './Item'，这里item将icon和title值传到那边去了-->
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>

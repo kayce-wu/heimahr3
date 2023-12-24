@@ -6,7 +6,7 @@
     :before-upload="beforeAvatarUpload"
     :http-request="uploadImage"
   >
-    <!-- (自动上传)action是上传地址 人资项目不需要 人资项目(手动上传)  -->
+    <!-- (自动上传)action是上传地址 人资项目不需要 人资项目(手动上传)，就是说本来模板上的action="这里是头像地址的"，这里改成下面:http-request="uploadImage"属性(冒号开头的不是响应函数，是属性，@是事件)来上传图片了  -->
     <!-- show-file-list不展示列表 -->
     <img v-if="value" :src="value" class="avatar">
     <i v-else class="el-icon-plus avatar-uploader-icon" />
@@ -42,6 +42,7 @@ export default {
     uploadImage(params) {
       console.log(params.file)
       const cos = new COS({
+        // 腾讯云桶的密钥
         SecretId: 'AKIDDSdjgnjT1NZ3a7VjkfVIwOdfv9IH2b8e',
         SecretKey: 'WEwe9WJ9vLeq1BHNLLKF5Up10ndUDk24'
       }) // 完成cos对象的初始化
@@ -52,10 +53,11 @@ export default {
         StorageClass: 'STANDARD', // 固定值
         Body: params.file // 文件对象
       }, (err, data) => {
+        // (err, data)这个是cos插件的固定样式，返回的错误码或者数据，如果上传图片成功，这个数据中会返回响应码200和腾讯云图片的地址
         if (data.statusCode === 200 && data.Location) {
           // 拿到了腾讯云返回的地址
           // 通过input自定义事件将地址传出去
-          this.$emit('input', 'http://' + data.Location) // 将地址返回了
+          this.$emit('input', 'http://' + data.Location) // 将地址返回了，谁调用了image-upload这个组件就返回谁那里，如文件../detial.vue中<image-upload v-model="userInfo.staffPhoto" />调用了并显示，也在本文件的<img v-if="value" :src="value" class="avatar">显示该图片
         } else {
           this.$message.error(err.Message) // 上传失败提示消息
         }

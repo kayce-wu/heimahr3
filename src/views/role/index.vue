@@ -10,13 +10,15 @@
         <!-- 放置列 -->
         <el-table-column prop="name" align="center" width="200" label="角色">
           <template v-slot="{ row }">
-            <!-- 条件判断 -->
+            <!-- 条件判断 v-if="row.isEdit"，判断是否在编辑状态，是就进入行输入el-input，不是就显示row.name -->
             <el-input v-if="row.isEdit" v-model="row.editRow.name" size="mini" />
+            <!-- v-model="row.editRow.name"将编辑时的表单双向绑定缓存数据 -->
             <span v-else>{{ row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="state" align="center" width="200" label="启用">
           <!-- 自定义列结构 -->
+          <!-- v-slot作用域插槽，只能作用在template组件上，所以加了个组件 -->
           <template v-slot="{ row }">
             <!-- 开 1 关 0 -->
             <el-switch v-if="row.isEdit" v-model="row.editRow.state" :active-value="1" :inactive-value="0" />
@@ -39,6 +41,7 @@
             </template>
             <template v-else>
               <!-- 非编辑状态 -->
+              <!-- type="text"让“分配权限”变为链接状态 -->
               <el-button size="mini" type="text" @click="btnPermission(row.id)">分配权限</el-button>
               <el-button size="mini" type="text" @click="btnEditRow(row)">编辑</el-button>
               <el-popconfirm
@@ -51,9 +54,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 放置分页组件 -->
+      <!-- 放置分页组件 justify="end"：放置在尾部-->
       <el-row type="flex" style="height:60px" align="middle" justify="end">
-        <!-- 放置分页组件 -->
+        <!-- 放置分页组件；layout="prev, pager, next" 前中后页码用逗号隔--element文档-->
         <el-pagination
           :page-size="pageParams.pagesize"
           :current-page="pageParams.page"
@@ -71,9 +74,10 @@
           <el-input v-model="roleForm.name" style="width:300px" size="mini" />
         </el-form-item>
         <el-form-item label="启用" prop="state">
-          <!-- 重置表单数据 需要prop属性 -->
           <!-- 如果不需要校验 就不需要写 prop属性 -->
+          <!-- 但是重置表单数据 需要prop属性 -->
           <el-switch v-model="roleForm.state" :active-value="1" :inactive-value="0" size="mini" />
+          <!-- :active-value="1" :inactive-value="0"，根据element文档，设置这两个属性就可以让开关的值从默认的true和false变成了数字。 -->
         </el-form-item>
         <el-form-item prop="description" label="角色描述">
           <el-input v-model="roleForm.description" type="textarea" :rows="3" style="width:300px" size="mini" />
@@ -91,6 +95,7 @@
     <!-- 放置权限弹层 -->
     <el-dialog :visible.sync="showPermissionDialog" title="分配权限">
       <!-- 放置权限数据 -->
+      <!-- check-strictly这个属性就是为了解除父子关联的关系，就是为了解决下面复选框中，把子不勾选，父的勾选框的勾也消失掉的问题 -->
       <el-tree
         ref="permTree"
         check-strictly
@@ -124,7 +129,7 @@ export default {
       pageParams: {
         page: 1, // 第几页
         pagesize: 5, // 每页多少条
-        total: 0
+        total: 0 // 总数
       },
       roleForm: {
         name: '',
@@ -150,13 +155,15 @@ export default {
       const { rows, total } = await getRoleList(this.pageParams)
       this.list = rows // 赋值数据
       this.pageParams.total = total
-      // 针对每一行数据添加一个编辑标记
+      // 针对每一行数据添加一个编辑标记，这个主要是用于标记哪一行被点了编辑按钮了，根据这个标记就可以进入行内编辑了
       this.list.forEach(item => {
         // item.isEdit = false // 添加一个属性 初始值为false
         // 数据响应式的问题  数据变化 视图更新
         // 添加的动态属性 不具备响应式特点
         // this.$set(目标对象, 属性名称, 初始值) 可以针对目标对象 添加的属性 添加响应式
-        this.$set(item, 'isEdit', false)
+        // kw: 说白了就是如果用item.isEdit = false的话，点击编辑按钮，vue就不会实时监听这个值的变化，所以就没有打开那个编辑框，但是使用this.$set(item, 'isEdit', false)之后，你点击编辑，它就立马响应了
+        this.$set(item, 'isEdit', false) // 设置默认值
+        // 为了不影响原来的旧数据，特意复制了一份数据出来随意修改
         this.$set(item, 'editRow', {
           name: item.name,
           state: item.state,
@@ -205,6 +212,7 @@ export default {
           ...row.editRow,
           isEdit: false // 退出编辑模式
         }) // 规避eslint的误判
+        // 总结就是eslint会认为这是语法错误，所以使用Object.assign对象赋值的方法，实际上row.name = row.editRow.name这个是没问题的
       } else {
         this.$message.warning('角色和描述不能为空')
       }

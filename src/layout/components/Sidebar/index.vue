@@ -14,6 +14,7 @@
         mode="vertical"
       >
         <!-- 循环路由信息 -->
+        <!-- v-for="route遍历路由信息，然后生成sidebar-item组件(假如有8个模块，那就生成8个sidebar-item)，然后判断是否需要显示对应item的图标和标题 -->
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>

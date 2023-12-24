@@ -99,7 +99,9 @@ export default {
           // kw：this.$store.dispatch('user/login', this.loginForm)：store目录下的user.js是实现方法
           await this.$store.dispatch('user/login', this.loginForm)
           // Vuex 中的action 返回的promise
+          // kw: 有async await所以只有登录成功才能执行下面的跳转主页
           // 跳转主页
+          // kw: 为什么'/'代表主页？可以看router文件，'/'指向'/dashboard'，这个不就是主页的位置嘛
           this.$router.push('/')
         }
       })

@@ -143,6 +143,7 @@ export default {
       // let result = await getDepartment()
       this.depts = transListToTreeData(await getDepartment(), 0)
       // console.log(this.depts[0])
+      // 将首个id节点(传智教育)赋值给this.queryParams.departmentId，用于查询数据
       this.queryParams.departmentId = this.depts[0].id
       // 设置选中节点
       // 树组件渲染是异步的 等到更新完毕
@@ -150,7 +151,7 @@ export default {
         // 此时意味着树渲染完毕
         this.$refs.deptTree.setCurrentKey(this.queryParams.departmentId)
       })
-      // 这个时候参数 记录了id
+      // 这个时候参数 记录了id，所以在这里首次调用下面的getEmployeeList，获取员工信息
       this.getEmployeeList()
     },
     selectNode(node) {

@@ -8,6 +8,7 @@
     separator="-"
     @change="changeValue"
   />
+  <!-- separator="-"改成传智教育-总裁办，就是用-隔开 -->
 </template>
 <script>
 import { getDepartment } from '@/api/department'

@@ -37,11 +37,14 @@ service.interceptors.response.use((response) => {
   }
 }, async(error) => {
   if (error.response.status === 401) {
+    // kw: 401是token的失效状态码
     // KW: import { Message } from 'element-ui'
     Message({ type: 'warning', message: 'token超时了' })
     // 说明token超时了
     await store.dispatch('user/logout') // 调用action 退出登录
+    // kw: 因为store.dispatch('user/logout')返回promise，所以这里使用async await，等待删除干净才执行下面操作，这样就没有跳转负担。
     //  主动跳到登录页
+    // kw: import router from '@/router'
     router.push('/login') // 跳转到登录页
     return Promise.reject(error)
   }
